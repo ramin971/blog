@@ -23,8 +23,9 @@ class Menu(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=30,unique=True)
     fa_name = models.CharField(max_length=30)
+
     def __str__(self) -> str:
-        return self.value
+        return self.name
     
 class Seo(models.Model):
     title = models.CharField(max_length=100)
@@ -43,9 +44,12 @@ class Post(models.Model):
         ('P','Publish')
     )
     title = models.CharField(max_length=200, unique=True)
+    image = models.ImageField(upload_to='image')
     slug = models.SlugField(max_length=200, unique=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete= models.CASCADE,related_name='posts')
+    description = models.TextField()
     content = models.TextField()
+    read_time = models.PositiveSmallIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now= True)
     status = models.CharField(max_length=1,choices=STATUS_CHOICES,default='D')
@@ -55,7 +59,6 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
 
 
 
@@ -71,14 +74,25 @@ class Rating(models.Model):
         ]
 
 
+
+class Comment(models.Model):
+    text = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='comments')
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
+    is_active = models.BooleanField(default=False)
+    # parent = models.ForeignKey('self',on_delete=models.CASCADE,null=True,blank=True,related_name='replis')
+
+
+    def __str__(self) -> str:
+        return f'p{self.post}-u{self.user}-i{self.id}'
+    
+
 class Reaction(models.Model):
     REACTION_OPTIONS = (('L','Like'),('D','Dislike'))
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
-    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='reactions')
+    comment = models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='reactions')
     reaction_type = models.CharField(max_length=1,choices=REACTION_OPTIONS)
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=('user','post'),name='unique_reaction')
+            models.UniqueConstraint(fields=('user','comment'),name='unique_reaction')
         ]
-
-
