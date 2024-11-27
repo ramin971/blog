@@ -14,7 +14,7 @@ router = DefaultRouter()
 router.register(r'menu', MenuViewSet)
 router.register(r'tag', TagViewSet)
 router.register(r'comment',CommentViewSet,basename='comment')
-router.register(r'reactions',ReactionViewSet)
+router.register(r'reaction',ReactionViewSet)
 router.register(r'rating',RatingPost)
 router.register(r'post',PostViewSet)
 

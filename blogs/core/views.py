@@ -17,13 +17,13 @@ from django.db.models import Avg,Count,Q
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class RatingPost(mixins.CreateModelMixin,
@@ -40,7 +40,7 @@ class RatingPost(mixins.CreateModelMixin,
 class ReactionViewSet(viewsets.ModelViewSet):
     queryset = Reaction.objects.select_related('comment__user','comment__post__author','comment__post','user').all()
     serializer_class = ReactionSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         comment_id = request.data.get('comment')
@@ -68,7 +68,7 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related('author','menu').prefetch_related('tags')\
         .annotate(avg_rate=Avg('rates__rate'))
     serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    # permission_classes = [IsOwnerOrReadOnly]
     pagination_class = CustomPagination
 
 
@@ -84,7 +84,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
     pagination_class = CustomPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ['create','update','partial_update']:

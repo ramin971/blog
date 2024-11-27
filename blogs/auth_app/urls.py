@@ -4,8 +4,8 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from . import views
 
 router = DefaultRouter()
-router.register(r'user', views.UserViewSet)
-router.register(r'change_password', views.ChangePassword)
+router.register(r'users', views.UserViewSet)
+router.register(r'change_password', views.ChangePassword,basename='change_pass')
 
 
 urlpatterns = [

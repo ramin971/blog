@@ -161,5 +161,5 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+AUTH_USER_MODEL = 'auth_app.User'
 COOKIE_MAX_AGE = 3600 * 24 * 1 # 1 days

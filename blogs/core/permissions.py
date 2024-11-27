@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from .models import Post
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
 

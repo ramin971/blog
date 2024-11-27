@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Post,Tag,Menu,Rating,Reaction,Comment
-from auth_app.serializers import SimpleUserSerializer
+from auth_app.serializers import UserSerializer
 
 
 
@@ -20,7 +20,7 @@ class MenuSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id','value']
+        fields = ['id','name','fa_name']
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class RatingSerializer(serializers.ModelSerializer):
 class ReactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reaction
-        fields = ['id','user','post','reaction_type']
+        fields = ['id','user','comment','reaction_type']
         read_only_fields = ['id','user']
         # extra_kwargs={'comment':{'write_only':True}}
 
@@ -55,7 +55,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id','title','slug','menu','image','author','description','content','read_time','seos','tags','created_on','updated_on','status']
+        fields = ['id','title','slug','menu','image','author','rate','description','content','read_time','seos','tags','created_on','updated_on','status']
         read_only_fields = ['id','rate','created_on','updated_on','status']
 
 
@@ -78,7 +78,7 @@ class SimpleCommentSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = SimpleUserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     likes = serializers.SerializerMethodField(read_only=True)
     dislikes = serializers.SerializerMethodField(read_only=True)
     class Meta(SimpleCommentSerializer.Meta):
