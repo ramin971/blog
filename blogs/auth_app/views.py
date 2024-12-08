@@ -10,6 +10,7 @@ from rest_framework import status,mixins,viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
 
@@ -17,7 +18,7 @@ from django.conf import settings
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     pagination_class = CustomPagination
-    permission_classes =[CreateOrIsAdmin]
+    # permission_classes =[CreateOrIsAdmin]
 
     def get_serializer_class(self):
         if self.action in ['update','partial_update']:
@@ -33,10 +34,11 @@ class UserViewSet(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         user = User.objects.create_user(password=serializer.validated_data['password'],**serializer.data)
+        print('@@@@@@@@@@',user)
         refresh_token = RefreshToken.for_user(user)
         
-        # result = {**serializer.data , **{'access':str(refresh_token.access_token)}}
-        response = Response(serializer.data , status=status.HTTP_201_CREATED)
+        result = {**serializer.data , **{'access':str(refresh_token.access_token)}}
+        response = Response(result , status=status.HTTP_201_CREATED)
         response.set_cookie('refresh_token', refresh_token, max_age=settings.COOKIE_MAX_AGE, httponly=True, path='/api/auth/jwt/refresh')
         return response
 

@@ -1,8 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer as BaseTokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import serializers
-from django.contrib.auth.password_validation import validate_password 
+from django.contrib.auth.password_validation import validate_password as validate_pass 
 # from django.db import transaction
 from .models import User
 
@@ -18,29 +17,22 @@ class TokenRefreshSerializer(BaseTokenRefreshSerializer):
     
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    access = serializers.SerializerMethodField(read_only=True)
-
+    # access = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = User
-        fields = ['id','username','password','access']
+        fields = ['id','username','password']
         extra_kwargs = {'id':{'read_only':True},'password':{'write_only':True}}
 
     def validate_password(self,value):
-        validate_password(value)
+        validate_pass(value)
         return value
-
-    # # validate just user data to prevent error
-    # def validate(self, attrs):
-    #     customer=attrs.pop('customer')
-    #     super().validate(attrs)
-    #     attrs['customer'] = customer
-    #     return attrs
     
     # take access token to new user response
-    def get_access(self,instance):
-        refresh_token = RefreshToken.for_user(instance)
-        access_token = refresh_token.access_token
-        return str(access_token)
+    # def get_access(self,instance):
+    #     print('$$$$$$$$$instance, ',instance)
+    #     refresh_token = RefreshToken.for_user(instance)
+    #     access_token = refresh_token.access_token
+    #     return str(access_token)
     
     # create customer beside user
     # @transaction.atomic()
@@ -53,8 +45,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username','password']
+        fields = ['id','username']
         # extra_kwargs = {'id':{'read_only':True},'password':{'write_only':True}}
+    
+
 
 
     # def create(self, validated_data):
@@ -79,7 +73,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         return value
     
     def validate_new_password(self,value):
-        validate_password(value)
+        validate_pass(value)
         return value
     
     def save(self, **kwargs):
