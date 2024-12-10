@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer as BaseTokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
-from rest_framework import serializers
+from rest_framework import serializers,status
+from rest_framework.response import Response
 from django.contrib.auth.password_validation import validate_password as validate_pass 
 # from django.db import transaction
 from .models import User
@@ -74,6 +75,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     
     def validate_new_password(self,value):
         validate_pass(value)
+        print('new pass corect8888888888')
         return value
     
     def save(self, **kwargs):
@@ -82,3 +84,4 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return user
+    

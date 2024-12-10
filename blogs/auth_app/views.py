@@ -76,9 +76,8 @@ class ChangePassword(mixins.CreateModelMixin,
     # Change Status_Code of ChangePassword from 201 to 205
     def create(self, request, *args, **kwargs):
         result = super().create(request, *args, **kwargs)
-        result.status_code = 205
+        result.status_code = status.HTTP_205_RESET_CONTENT
         return result
-
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
