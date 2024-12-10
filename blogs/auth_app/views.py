@@ -27,7 +27,8 @@ class UserViewSet(ModelViewSet):
             return UserCreateSerializer
         else:
             return UserSerializer
-
+        
+    
     # create_user / set refresh_cookie / add access_response
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -60,7 +61,13 @@ class UserViewSet(ModelViewSet):
         elif request.method == 'DELETE':
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-
+        
+    @action(detail=False , methods=['post'],permission_classes=[IsAuthenticated])
+    def change_password(self,request):
+        serializer = ChangePasswordSerializer(data=request.data,context={'user':request.user})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message': 'Password changed successfully'},status=status.HTTP_205_RESET_CONTENT)
 
 
 
