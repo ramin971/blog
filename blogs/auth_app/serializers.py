@@ -46,16 +46,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username']
-        # extra_kwargs = {'id':{'read_only':True},'password':{'write_only':True}}
-    
+        fields = ['id','username','email']    
 
 
-
-    # def create(self, validated_data):
-    #     user = User.objects.create_user(**validated_data)
-    #     return user
-    
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -68,14 +61,12 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     def validate_old_password(self,value):
         user = self.context['user']
-        print('3333333333333',user)
         if not user.check_password(value):
             raise serializers.ValidationError('Your old password was entered incorrectly.')
         return value
     
     def validate_new_password(self,value):
         validate_pass(value)
-        print('new pass corect8888888888')
         return value
     
     def save(self, **kwargs):

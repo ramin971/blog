@@ -43,21 +43,19 @@ class UserViewSet(ModelViewSet):
         response.set_cookie('refresh_token', refresh_token, max_age=settings.COOKIE_MAX_AGE, httponly=True, path='/api/auth/jwt/refresh')
         return response
 
-    @action(detail=False , methods=['get','put','delete'],permission_classes=[IsAuthenticated])
+    @action(detail=False , methods=['get','put','patch','delete'],permission_classes=[IsAuthenticated])
     def me(self,request):
         user = request.user
         if request.method == 'GET':
             serializer = UserSerializer(user)
-            
-            # print('########get mycookie:',request.COOKIES.get('my_cookie'))
-            # print('##########get_cookie',request.COOKIES.get('refresh_token'))
-            # print(type(request.COOKIES.get('refresh_token')))
             return Response(serializer.data,status=status.HTTP_200_OK)
+
         elif request.method in ['PUT','PATCH']:
-            serializer = UserUpdateSerializer(user,data=request.data)
+            serializer = UserUpdateSerializer(user,data=request.data,partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data,status=status.HTTP_205_RESET_CONTENT)
+
         elif request.method == 'DELETE':
             user.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
